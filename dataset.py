@@ -7,6 +7,7 @@ class Data:
     language = []
     language_name = []
     filename = []
+    unique_languages_names=[]
 
 def fetch_code(subset='train', folder='/home/alexis/Escritorio/tesis/data/codes/'):
     data = Data()
@@ -21,10 +22,10 @@ def fetch_code(subset='train', folder='/home/alexis/Escritorio/tesis/data/codes/
         data.language_name.append(file_name.split('.')[1])
         data.filename.append(file_name)
 
-    languages_list = list(set(data.language_name))
+    data.unique_languages_names = list(set(data.language_name))
 
     for i in range(len(data.language_name)):
-        data.language[i] = languages_list.index(data.language_name[i])
+        data.language[i] = data.unique_languages_names.index(data.language_name[i])
 
     return data
 
