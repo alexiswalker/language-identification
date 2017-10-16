@@ -4,6 +4,7 @@ from dataset import fetch_code, distribution
 folder = '/home/alexis/Escritorio/tesis/data/codes/'
 
 train_dataset = fetch_code('train', folder)
+
 count_vect = CountVectorizer()
 X_train_counts = count_vect.fit_transform(train_dataset.data)
 

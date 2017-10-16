@@ -17,8 +17,14 @@ def fetch_code(subset='train', folder='/home/alexis/Escritorio/tesis/data/codes/
         with file(search_in + file_name) as f:
             s = f.read()
         data.data.append(s)
+        data.language.append(0)
         data.language_name.append(file_name.split('.')[1])
         data.filename.append(file_name)
+
+    languages_list = list(set(data.language_name))
+
+    for i in range(len(data.language_name)):
+        data.language[i] = languages_list.index(data.language_name[i])
 
     return data
 
@@ -28,4 +34,6 @@ def distribution(subset='train', folder='/home/alexis/Escritorio/tesis/data/code
     return frecuency
 
 if __name__ == '__main__':
-    print distribution()
+    d = fetch_code(subset='test')
+    for i in range(20):
+        print d.language[i], d.language_name[i]
