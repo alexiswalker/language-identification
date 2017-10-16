@@ -1,5 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
 import numpy as np
 
@@ -9,17 +10,15 @@ folder = '/home/alexis/Escritorio/tesis/data/codes/'
 
 train_dataset = fetch_code('train', folder)
 
+#text_clf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()),('clf', MultinomialNB())])
 
-text_clf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()),('clf', MultinomialNB())])
+text_clf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()),('clf',  SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, random_state=42, max_iter=5, tol=None))])
 text_clf.fit(train_dataset.data, train_dataset.language)
-
-
-p= text_clf.predict(['def ale(): return None'])
-
 
 test_dataset = fetch_code('test', folder)
 docs_test = test_dataset.data
 predicted = text_clf.predict(docs_test)
+
 print np.mean(predicted == test_dataset.language)
 
 '''
