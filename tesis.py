@@ -2,6 +2,8 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
+from sklearn.externals import joblib
+
 import numpy as np
 
 from dataset import fetch_code, distribution
@@ -14,6 +16,7 @@ train_dataset = fetch_code('train', folder)
 
 text_clf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()),('clf',  SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, random_state=42, max_iter=5, tol=None))])
 text_clf.fit(train_dataset.data, train_dataset.language)
+joblib.dump(text_clf, '/home/alexis/Escritorio/tesis/filename.pkl') 
 
 test_dataset = fetch_code('test', folder)
 docs_test = test_dataset.data
