@@ -1,12 +1,18 @@
 from sklearn.externals import joblib
 import numpy as np
 from dataset import fetch_code, distribution
+import cPickle
 
-text_clf = joblib.load('/home/alexis/Escritorio/tesis/filename.pkl')
+
+import pickle
+
+# and later you can load it
+with open('filename1.pkl', 'rb') as f:
+    clf = pickle.load(f)
+
 folder = '/home/alexis/Escritorio/tesis/data/codes/'
 
 test_dataset = fetch_code('test', folder)
-docs_test = test_dataset.data
-predicted = text_clf.predict(docs_test)
+predicted = clf.predict(test_dataset.data)
 
 print np.mean(predicted == test_dataset.language)

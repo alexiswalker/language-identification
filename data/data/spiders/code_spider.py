@@ -5,32 +5,49 @@ import random
 
 class DataSpider(Spider):
     name = 'data'
-    allowed_domains = ['snipplr.com']
+    allowed_domains = ['pastebin.com']
 
     start_urls = [
-        "http://snipplr.com/all/page/1/",
-        "http://snipplr.com/all/page/2/",
-        "http://snipplr.com/all/page/3/",
+        "http://pastebin.com/archive/c/",
+        "http://pastebin.com/archive/cpp/",
+        "http://pastebin.com/archive/csharp/",
+        "http://pastebin.com/archive/clojure/",
+        "http://pastebin.com/archive/coffeescript/",
+        "http://pastebin.com/archive/css/",
+        "http://pastebin.com/archive/diff/",
+        "http://pastebin.com/archive/erlang/",
+        "http://pastebin.com/archive/haskell/",
+        "http://pastebin.com/archive/java/",
+        "http://pastebin.com/archive/javascript/",
+        "http://pastebin.com/archive/json/",
+        "http://pastebin.com/archive/lua/",
+        "http://pastebin.com/archive/php/",
+        "http://pastebin.com/archive/perl/",
+        "http://pastebin.com/archive/python/",
+        "http://pastebin.com/archive/ruby/",
+        "http://pastebin.com/archive/rust/",
+        "http://pastebin.com/archive/scala/",
+        "http://pastebin.com/archive/smalltalk/",
+        "http://pastebin.com/archive/sql/",
+        "http://pastebin.com/archive/vbscript/",
+        "http://pastebin.com/archive/xml/",
     ]
 
     def parse(self, response):
         soup = BeautifulSoup(response.body, 'html.parser')
-        for ol in soup.find_all('ol'):
-            for li in ol.find_all('li'):
-                links = li.find_all('a')
-                view_number = links[1].get('href').split('/')[2]
-                url_with_plain_code =  'http://snipplr.com/view.php?codeview&id=' + view_number
-                #language = links[2].text
-                yield Request(url=url_with_plain_code, callback=self.parse_code)
+        table = soup.find_all("table", "maintable")[0]
+        rows = table.find_all("tr")
+
+        for i in rows[1:]:
+            url_with_plain_code = 'https://pastebin.com/raw' + i.find_all("a")[0].get('href')
+            yield Request(url=url_with_plain_code, callback=self.parse_code)
 
     def parse_code(self, response):
         self.log(response.meta)
-        code = BeautifulSoup(response.body, 'html.parser')
-        t = code.find(id="viewsource").find_all('textarea')[0].text
-        language = code.find_all("div", "rgt")[0].find_all('a')[0].text
+        language = 'python'
         filename = '/home/alexis/Escritorio/tesis/data/data/codes/code-%s.%s' % (self.random_string(), language)
         with open(filename, 'wb') as f:
-            f.write(t)
+            f.write(response.body)
         self.log('Saved file %s' % filename)
 
     def random_string(self):

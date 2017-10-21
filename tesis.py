@@ -16,13 +16,20 @@ train_dataset = fetch_code('train', folder)
 
 text_clf = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()),('clf',  SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, random_state=42, max_iter=5, tol=None))])
 text_clf.fit(train_dataset.data, train_dataset.language)
-#joblib.dump(text_clf, '/home/alexis/Escritorio/tesis/filename.pkl') 
+#joblib.dump(text_clf, '/home/alexis/Escritorio/tesis/filename.pkl')
 
 test_dataset = fetch_code('test', folder)
-docs_test = test_dataset.data
-predicted = text_clf.predict(docs_test)
+predicted = text_clf.predict(test_dataset.data)
 
 print np.mean(predicted == test_dataset.language)
+
+text_clf.sparsify()
+
+import pickle
+# now you can save it to a file
+with open('filename1.pkl', 'wb') as f:
+    pickle.dump(text_clf, f)
+
 
 '''
 count_vect = CountVectorizer()
